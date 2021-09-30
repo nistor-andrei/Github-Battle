@@ -1,21 +1,14 @@
-import { useEffect } from "react";
+import { useEffect, useState } from 'react';
 
 export function useFetchPopularRepos(language) {
-  const endpoint = window.encodeURI(
-    `https://api.github.com/search/repositories?q=stars:>1+language:${language}&sort=stars&order=desc&type=Repositories`
-  );
-
-  let repos;
-
+  const endpoint = window.encodeURI(`https://api.github.com/search/repositories?q=stars:>1+language:${language}&sort=stars&order=desc&type=Repositories`);
+  const [data, setData] = useState(null);
   useEffect(() => {
-    repos = fetch(endpoint)
+    fetch(endpoint)
       .then((res) => res.json())
       .then((data) => {
-        if (!data.items) {
-          throw new Error(data.message);
-        }
-        return data.items;
+        setData(data.items);
       });
-  }, []);
-  return repos;
+  }, [endpoint]);
+  return data;
 }
